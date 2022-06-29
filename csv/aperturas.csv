@@ -1,0 +1,22 @@
+﻿id_apertura;apertura;id_division
+NULL;Alimentos;1
+NULL;Bebidas no alcoholicas;1
+NULL;Bebidas alcoholicas;2
+NULL;Tabaco;2
+NULL;Prendas de vestir y materiales;3
+NULL;Calzado;3
+NULL;Alquiler de la vivienda y gastos conexos;4
+NULL;Mantenimiento y reparacion de la vivienda;4
+NULL;Electricidad, gas y otros combustibles;4
+NULL;Bienes y servicios para la conservacion del hogar;5
+NULL;Productos medicinales, artefactos y equipos para la salud;6
+NULL;Gastos de prepagas;6
+NULL;Adquisicion de vehiculos;7
+NULL;Funcionamiento de equipos de transporte personal;7
+NULL;Transporte publico;7
+NULL;Servicios  de telefonia e internet;8
+NULL;Equipos audiovisuales, fotograficos y de procesamiento de la informacion;9
+NULL;Servicios recreativos y culturales;9
+NULL;Periodicos, diarios, revistas, libros y articulos de papeleria;9
+NULL;Restaurantes y comidas fuera del hogar;10
+NULL;Cuidado personal;11
