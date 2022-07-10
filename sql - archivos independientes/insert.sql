@@ -1,11 +1,13 @@
+USE ipc_argentina;
+
 /**************************************************************** TABLA REGION ***************************************************************/
-INSERT INTO region (`id_region`,`region`) VALUES (1,'Nacional');
+INSERT INTO region (`id_region`,`region`) VALUES (1,'NACIONAL');
 INSERT INTO region (`id_region`,`region`) VALUES (2,'GBA');
-INSERT INTO region (`id_region`,`region`) VALUES (3,'Pampeana');
-INSERT INTO region (`id_region`,`region`) VALUES (4,'Noreste');
-INSERT INTO region (`id_region`,`region`) VALUES (5,'Noroeste');
-INSERT INTO region (`id_region`,`region`) VALUES (6,'Cuyo');
-INSERT INTO region (`id_region`,`region`) VALUES (7,'Patagonia');
+INSERT INTO region (`id_region`,`region`) VALUES (3,'PAMPEANA');
+INSERT INTO region (`id_region`,`region`) VALUES (4,'NORESTE');
+INSERT INTO region (`id_region`,`region`) VALUES (5,'NOROESTE');
+INSERT INTO region (`id_region`,`region`) VALUES (6,'CUYO');
+INSERT INTO region (`id_region`,`region`) VALUES (7,'PATAGONIA');
 
 /***************************************************************** TABLA PERIODO *****************************************************************/
 INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (1,'ene',1,2017);
@@ -78,7 +80,7 @@ INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (65,'may',5,
 INSERT INTO divisiones (`id_division`,`division`) VALUES (1,'Alimentos y bebidas no alcoholicas');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (2,'Bebidas alcoholicas y tabaco');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (3,'Prendas de vestir y calzado');
-INSERT INTO divisiones (`id_division`,`division`) VALUES (4,'Vivienda. agua. electricidad y otros combustibles');
+INSERT INTO divisiones (`id_division`,`division`) VALUES (4,'Vivienda, agua, electricidad y otros combustibles');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (5,'Equipamiento y mantenimiento del hogar');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (6,'Salud');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (7,'Transporte');

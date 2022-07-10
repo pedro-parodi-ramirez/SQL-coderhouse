@@ -1,10 +1,12 @@
+USE ipc_argentina;
+
 -- Vista ipc_anual_desde_2017
 CREATE OR REPLACE VIEW ipc_anual_desde_2017 AS
 SELECT SUM(i.valor_ipc_intermensual) AS ipc_anual, p.año
 FROM ipc AS i
 LEFT JOIN periodo AS p
 ON i.id_periodo = p.id_periodo
-WHERE i.id_region = (SELECT id_region FROM region WHERE region = 'Nacional')
+WHERE i.id_region = (SELECT id_region FROM region WHERE region = 'NACIONAL')
 GROUP BY año
 ORDER BY año DESC;
 
@@ -40,7 +42,7 @@ ORDER BY valor_ipc_division DESC;
 CREATE OR REPLACE VIEW ipc_nacional_Alberto_Fernandez AS
 SELECT i.id_ipc, i.valor_ipc_intermensual, i.valor_ipc_interanual, p.mes_nombre as mes, p.año,
 (SELECT region FROM ipc_argentina.region
-	WHERE region = 'Nacional') AS region
+	WHERE region = 'NACIONAL') AS region
 FROM ipc AS i
 JOIN periodo AS p
 ON i.id_periodo = p.id_periodo
@@ -51,7 +53,7 @@ ORDER BY p.id_periodo DESC;
 CREATE OR REPLACE VIEW ipc_nacional_Mauricio_Macri AS
 SELECT i.id_ipc, i.valor_ipc_intermensual, i.valor_ipc_interanual, p.mes_nombre as mes, p.año,
 (SELECT region FROM ipc_argentina.region
-	WHERE region = 'Nacional') AS region
+	WHERE region = 'NACIONAL') AS region
 FROM ipc AS i
 JOIN periodo AS p
 ON i.id_periodo = p.id_periodo

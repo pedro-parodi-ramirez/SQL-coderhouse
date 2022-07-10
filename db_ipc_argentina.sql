@@ -81,13 +81,13 @@ FOREIGN KEY (id_region) REFERENCES region(id_region)
 /************************************************************************************************************************************************/
 
 /****************************************************************** TABLA REGION ****************************************************************/
-INSERT INTO region (`id_region`,`region`) VALUES (1,'Nacional');
+INSERT INTO region (`id_region`,`region`) VALUES (1,'NACIONAL');
 INSERT INTO region (`id_region`,`region`) VALUES (2,'GBA');
-INSERT INTO region (`id_region`,`region`) VALUES (3,'Pampeana');
-INSERT INTO region (`id_region`,`region`) VALUES (4,'Noreste');
-INSERT INTO region (`id_region`,`region`) VALUES (5,'Noroeste');
-INSERT INTO region (`id_region`,`region`) VALUES (6,'Cuyo');
-INSERT INTO region (`id_region`,`region`) VALUES (7,'Patagonia');
+INSERT INTO region (`id_region`,`region`) VALUES (3,'PAMPEANA');
+INSERT INTO region (`id_region`,`region`) VALUES (4,'NORESTE');
+INSERT INTO region (`id_region`,`region`) VALUES (5,'NOROESTE');
+INSERT INTO region (`id_region`,`region`) VALUES (6,'CUYO');
+INSERT INTO region (`id_region`,`region`) VALUES (7,'PATAGONIA');
 
 /***************************************************************** TABLA PERIODO *****************************************************************/
 INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (1,'ene',1,2017);
@@ -3330,7 +3330,7 @@ SELECT SUM(i.valor_ipc_intermensual) AS ipc_anual, p.año
 FROM ipc AS i
 LEFT JOIN periodo AS p
 ON i.id_periodo = p.id_periodo
-WHERE i.id_region = (SELECT id_region FROM region WHERE region = 'Nacional')
+WHERE i.id_region = (SELECT id_region FROM region WHERE region = 'NACIONAL')
 GROUP BY año
 ORDER BY año DESC;
 
@@ -3366,7 +3366,7 @@ ORDER BY valor_ipc_division DESC;
 CREATE OR REPLACE VIEW ipc_nacional_Alberto_Fernandez AS
 SELECT i.id_ipc, i.valor_ipc_intermensual, i.valor_ipc_interanual, p.mes_nombre as mes, p.año,
 (SELECT region FROM ipc_argentina.region
-	WHERE region = 'Nacional') AS region
+	WHERE region = 'NACIONAL') AS region
 FROM ipc AS i
 JOIN periodo AS p
 ON i.id_periodo = p.id_periodo
@@ -3377,9 +3377,73 @@ ORDER BY p.id_periodo DESC;
 CREATE OR REPLACE VIEW ipc_nacional_Mauricio_Macri AS
 SELECT i.id_ipc, i.valor_ipc_intermensual, i.valor_ipc_interanual, p.mes_nombre as mes, p.año,
 (SELECT region FROM ipc_argentina.region
-	WHERE region = 'Nacional') AS region
+	WHERE region = 'NACIONAL') AS region
 FROM ipc AS i
 JOIN periodo AS p
 ON i.id_periodo = p.id_periodo
 WHERE ((p.año >= 2016 AND p.año <= 2019) AND i.id_region = 1)
 ORDER BY p.id_periodo DESC;
+
+
+/************************************************************************************************************************************************/
+/****************************************************************** FUNCIONES *******************************************************************/
+/************************************************************************************************************************************************/
+
+/*  FUNCION ipc_año_X */
+DELIMITER $$
+CREATE FUNCTION `ipc_año_X`(this_region TEXT(20), this_año INT)
+RETURNS DECIMAL(8,2)
+READS SQL DATA
+BEGIN
+	DECLARE resultado FLOAT;
+	SET resultado =
+    IFNULL(
+		(SELECT SUM(i.valor_ipc_intermensual)	-- Se extrae el valor del ipc del año que se consulta, sumando los valores de los ipc mensuales
+			FROM ipc i							-- a nivel nacional
+			RIGHT JOIN periodo p
+			ON i.id_periodo = p.id_periodo
+			WHERE ( (p.año = UPPER(this_año)) AND (i.id_region = (SELECT id_region FROM region WHERE region = this_region)))),
+		"Datos de entrada invalidos.");
+RETURN resultado;
+END
+$$
+
+/*  FUNCION above_average */
+DELIMITER $$
+CREATE FUNCTION `above_average`(this_mes TEXT(20), this_año INT)
+RETURNS CHAR(255)
+READS SQL DATA
+BEGIN
+	DECLARE ipc_average FLOAT; -- Almacena el valor del ipc intermensual del periodo consultado por el usuario
+	DECLARE ipc_alimentos_y_bebidas_no_alcoholicas FLOAT; -- Almacena valor del ipc de la division "Alimentos y bebidas no alcoholicas"
+    SET ipc_average =
+		(SELECT valor_ipc_intermensual FROM ipc
+		WHERE(
+			-- La consulta es aplicada sobre la region "NACIONAL"
+			(id_region = (SELECT id_region FROM region r WHERE (region = 'NACIONAL')))
+            AND
+            -- Se utiliza el operador LIKE para tomar valido, por ejemplo, MAR como MARZO o ABR como ABRIL
+            (id_periodo = (SELECT id_periodo FROM periodo p WHERE (this_mes LIKE CONCAT(p.mes_nombre,'%') AND p.año = this_año))))
+		);
+	SET ipc_alimentos_y_bebidas_no_alcoholicas =
+		(SELECT valor_ipc_division FROM ipc_divisiones i
+        WHERE(
+			-- Se utiliza el operador LIKE para tomar valido, por ejemplo, MAR como MARZO o ABR como ABRIL
+			(id_periodo = (SELECT id_periodo FROM periodo p WHERE (this_mes LIKE CONCAT(p.mes_nombre,'%') AND p.año = this_año)))
+			AND
+            (id_division = (SELECT id_division FROM divisiones d WHERE (division = 'Alimentos y bebidas no alcoholicas')))
+            AND
+            -- La consulta es aplicada sobre la region "NACIONAL"
+            (id_region = (SELECT id_region FROM region r WHERE (region = 'NACIONAL'))))
+        );
+	
+    IF ( ISNULL(ipc_alimentos_y_bebidas_no_alcoholicas) OR ISNULL(ipc_average) ) THEN
+		-- Contempla datos incorrectos ingresados por el usuario
+		RETURN "Datos no validos";
+    ELSEIF ( ipc_alimentos_y_bebidas_no_alcoholicas > ipc_average ) THEN
+		RETURN CONCAT('En ', this_mes, '-', this_año, ' los alimentos y bebidas no alcoholicas tuvieron una inflacion mas alta que el promedio a nivel nacional.');
+	ELSE
+		RETURN CONCAT('En ', this_mes, '-', this_año, ' los alimentos y bebidas no alcoholicas tuvieron una inflacion mas baja que el promedio a nivel nacional.');
+	END IF;
+END
+$$
