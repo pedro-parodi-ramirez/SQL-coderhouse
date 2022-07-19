@@ -3454,28 +3454,22 @@ DELIMITER ;
 /************************************************************** STORED PROCEDURES ***************************************************************/
 /************************************************************************************************************************************************/
 
-USE `ipc_argentina`;
-DROP PROCEDURE IF EXISTS `add_ipc_general`;
-DROP PROCEDURE IF EXISTS `divisions_ordered`;
-
-/*  SP add_ipc_general */
+-- SP add_ipc_general
 DELIMITER $$
-USE `ipc_argentina`$$
-CREATE PROCEDURE `add_ipc_general` (IN valor_ipc_intermensual DECIMAL(8,2), valor_ipc_interanual DECIMAL(8,2), id_periodo INT, id_region INT)
+CREATE PROCEDURE `add_ipc_general` (IN valor_ipc_intermensual DECIMAL(8,2), valor_ipc_interanual DECIMAL(8,2), id_periodo INT,id_region INT)
 BEGIN
-	-- Agrega el registro a la tabla, donde el primer valor es PK con AUTOINCREMENT
-	INSERT INTO ipc VALUES(
+	INSERT INTO ipc(`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_periodo`,`id_region`) VALUES(
 		NULL,
         valor_ipc_intermensual,
         valor_ipc_interanual,
         id_periodo,
         id_region);
 END$$
+
 DELIMITER ;
 
-/*  SP divisions_order_by */
+-- SP divisions_ordered
 DELIMITER $$
-USE `ipc_argentina`$$
 CREATE PROCEDURE `divisions_ordered` (param VARCHAR(10))
 BEGIN
 	-- Se ordena alfabéticamente en caso de recibir 'asc' o 'ASC' como parámetro
@@ -3488,4 +3482,53 @@ BEGIN
         ORDER BY division DESC;
 	END IF;
 END$$
+
 DELIMITER ;
+
+/************************************************************************************************************************************************/
+/****************************************************************** TRIGGERS ********************************************************************/
+/************************************************************************************************************************************************/
+
+-- Trigger BEF_INST_ipc_general
+CREATE TABLE IF NOT EXISTS log_periodo (
+latest_period INT NOT NULL,
+added_period INT NULL,
+user VARCHAR(50),
+fecha DATE NOT NULL,
+hora TIME NOT NULL
+);
+
+DELIMITER $$
+CREATE TRIGGER BEF_INS_ipc_general
+BEFORE INSERT ON ipc
+FOR EACH ROW
+BEGIN
+DECLARE latest_periodo INT;
+SET latest_periodo = (SELECT MAX(id_periodo) FROM periodo); -- Se capta el último período de la DB
+INSERT INTO log_periodo(`latest_period`, `added_period`, `user`, `fecha`, `hora`) VALUES (
+	latest_periodo,
+	NEW.id_periodo,
+    SESSION_USER(),
+    CURRENT_DATE(),
+    CURRENT_TIME());
+END$$
+DELIMITER ;
+
+-- Trigger AFT_INS_ipc_general
+CREATE TABLE IF NOT EXISTS log_ipc_general (
+user VARCHAR(50),
+action VARCHAR(10) NOT NULL,
+id_ipc INT NOT NULL,
+fecha DATE NOT NULL,
+hora TIME NOT NULL
+);
+
+CREATE TRIGGER AFT_INS_ipc_general
+AFTER INSERT ON ipc
+FOR EACH ROW
+INSERT INTO log_ipc_general(`user`, `action`, `id_ipc`, `fecha`, `hora`) VALUES (
+	SESSION_USER(),
+    'INSERT',
+    NEW.id_ipc,
+    CURRENT_DATE(),
+    CURRENT_TIME());
