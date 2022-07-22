@@ -1,4 +1,5 @@
 -- Se crea el esquema
+DROP DATABASE IF EXISTS ipc_argentina;
 CREATE DATABASE IF NOT EXISTS ipc_argentina;
 USE ipc_argentina;
 
@@ -6,81 +7,94 @@ USE ipc_argentina;
 /************************************************************** CREACION DE TABLAS **************************************************************/
 /************************************************************************************************************************************************/
 
+-- Tabla presidente
+CREATE TABLE IF NOT EXISTS presidente(
+	id_presidente INT AUTO_INCREMENT NOT NULL,
+	nombre_completo VARCHAR (50) NOT NULL,
+	mandato_inicio DATE NOT NULL,
+	mandato_fin DATE,
+	PRIMARY KEY (id_presidente)
+);
+
 -- Tabla periodo
 CREATE TABLE  IF NOT EXISTS periodo(
-id_periodo INT NOT NULL AUTO_INCREMENT,
-mes_nombre TEXT(15),
-mes INT NOT NULL,
-año INT NOT NULL,
-PRIMARY KEY (id_periodo)
+	id_periodo INT NOT NULL AUTO_INCREMENT,
+	id_presidente INT NOT NULL,
+	fecha DATE NOT NULL,
+	PRIMARY KEY (id_periodo),
+	FOREIGN KEY (id_presidente) REFERENCES presidente(id_presidente)
 );
 
 -- Tabla region
 CREATE TABLE  IF NOT EXISTS region(
-id_region INT NOT NULL AUTO_INCREMENT,
-region TEXT(10),
-PRIMARY KEY (id_region)
+	id_region INT NOT NULL AUTO_INCREMENT,
+	region VARCHAR(20),
+	PRIMARY KEY (id_region)
 );
 
 -- Tabla divisiones
 CREATE TABLE IF NOT EXISTS divisiones(
-id_division INT NOT NULL AUTO_INCREMENT,
-division TEXT(50),
-PRIMARY KEY (id_division)
+	id_division INT NOT NULL AUTO_INCREMENT,
+	division VARCHAR(100),
+	PRIMARY KEY (id_division)
 );
 
 -- Tabla aperturas
 CREATE TABLE IF NOT EXISTS aperturas(
-id_apertura INT NOT NULL AUTO_INCREMENT,
-apertura TEXT(50),
-id_division INT NOT NULL,
-PRIMARY KEY (id_apertura),
-FOREIGN KEY (id_division) REFERENCES divisiones(id_division)
+	id_apertura INT NOT NULL AUTO_INCREMENT,
+	apertura VARCHAR(100),
+	id_division INT NOT NULL,
+	PRIMARY KEY (id_apertura),
+	FOREIGN KEY (id_division) REFERENCES divisiones(id_division)
 );
 
 -- Tabla ipc
 CREATE TABLE IF NOT EXISTS ipc(
-id_ipc INT NOT NULL AUTO_INCREMENT,
-valor_ipc_intermensual DECIMAL(8,2),
-valor_ipc_interanual DECIMAL(8,2),
-id_periodo INT NOT NULL,
-id_region INT NOT NULL,
-PRIMARY KEY (id_ipc),
-FOREIGN KEY (id_periodo) REFERENCES periodo(id_periodo),
-FOREIGN KEY (id_region) REFERENCES region(id_region)
+	id_ipc INT NOT NULL AUTO_INCREMENT,
+	valor_ipc_intermensual FLOAT,
+	valor_ipc_interanual FLOAT,
+	id_periodo INT NOT NULL,
+	id_region INT NOT NULL,
+	PRIMARY KEY (id_ipc),
+	FOREIGN KEY (id_periodo) REFERENCES periodo(id_periodo),
+	FOREIGN KEY (id_region) REFERENCES region(id_region)
 );
 
 -- Tabla ipc_divisiones
 CREATE TABLE IF NOT EXISTS ipc_divisiones(
-id_ipc_division INT NOT NULL AUTO_INCREMENT,
-valor_ipc_division DECIMAL(8,2),
-id_division INT NOT NULL,
-id_periodo INT NOT NULL,
-id_region INT NOT NULL,
-PRIMARY KEY (id_ipc_division),
-FOREIGN KEY (id_division) REFERENCES divisiones(id_division),
-FOREIGN KEY (id_periodo) REFERENCES periodo(id_periodo),
-FOREIGN KEY (id_region) REFERENCES region(id_region)
+	id_ipc_division INT NOT NULL AUTO_INCREMENT,
+	valor_ipc_division FLOAT,
+	id_division INT NOT NULL,
+	id_periodo INT NOT NULL,
+	id_region INT NOT NULL,
+	PRIMARY KEY (id_ipc_division),
+	FOREIGN KEY (id_division) REFERENCES divisiones(id_division),
+	FOREIGN KEY (id_periodo) REFERENCES periodo(id_periodo),
+	FOREIGN KEY (id_region) REFERENCES region(id_region)
 );
 
 -- Tabla ipc_aperturas
 CREATE TABLE IF NOT EXISTS ipc_aperturas(
-id_ipc_apertura INT NOT NULL AUTO_INCREMENT,
-valor_ipc_apertura DECIMAL(8,2),
-id_apertura INT NOT NULL,
-id_periodo INT NOT NULL,
-id_region INT NOT NULL,
-PRIMARY KEY (id_ipc_apertura),
-FOREIGN KEY (id_apertura) REFERENCES aperturas(id_apertura),
-FOREIGN KEY (id_periodo) REFERENCES periodo(id_periodo),
-FOREIGN KEY (id_region) REFERENCES region(id_region)
+	id_ipc_apertura INT NOT NULL AUTO_INCREMENT,
+	valor_ipc_apertura FLOAT,
+	id_apertura INT NOT NULL,
+	id_periodo INT NOT NULL,
+	id_region INT NOT NULL,
+	PRIMARY KEY (id_ipc_apertura),
+	FOREIGN KEY (id_apertura) REFERENCES aperturas(id_apertura),
+	FOREIGN KEY (id_periodo) REFERENCES periodo(id_periodo),
+	FOREIGN KEY (id_region) REFERENCES region(id_region)
 );
-
+  
 /************************************************************************************************************************************************/
 /************************************************************** INSERCION DE DATOS **************************************************************/
 /************************************************************************************************************************************************/
 
-/****************************************************************** TABLA REGION ****************************************************************/
+/**************************************************************** TABLA PRESIDENTE ***************************************************************/
+INSERT INTO presidente (`id_presidente`,`nombre_completo`, `mandato_inicio`, `mandato_fin`) VALUES (1,'Mauricio Macri', '2015-12-10', '2019-12-10');
+INSERT INTO presidente (`id_presidente`,`nombre_completo`, `mandato_inicio`, `mandato_fin`) VALUES (2,'Alberto Fernandez', '2019-12-10', NULLIF(1,1));
+
+/**************************************************************** TABLA REGION ***************************************************************/
 INSERT INTO region (`id_region`,`region`) VALUES (1,'NACIONAL');
 INSERT INTO region (`id_region`,`region`) VALUES (2,'GBA');
 INSERT INTO region (`id_region`,`region`) VALUES (3,'PAMPEANA');
@@ -90,77 +104,77 @@ INSERT INTO region (`id_region`,`region`) VALUES (6,'CUYO');
 INSERT INTO region (`id_region`,`region`) VALUES (7,'PATAGONIA');
 
 /***************************************************************** TABLA PERIODO *****************************************************************/
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (1,'ene',1,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (2,'feb',2,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (3,'mar',3,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (4,'abr',4,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (5,'may',5,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (6,'jun',6,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (7,'jul',7,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (8,'ago',8,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (9,'sep',9,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (10,'oct',10,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (11,'nov',11,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (12,'dic',12,2017);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (13,'ene',1,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (14,'feb',2,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (15,'mar',3,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (16,'abr',4,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (17,'may',5,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (18,'jun',6,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (19,'jul',7,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (20,'ago',8,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (21,'sep',9,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (22,'oct',10,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (23,'nov',11,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (24,'dic',12,2018);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (25,'ene',1,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (26,'feb',2,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (27,'mar',3,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (28,'abr',4,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (29,'may',5,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (30,'jun',6,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (31,'jul',7,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (32,'ago',8,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (33,'sep',9,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (34,'oct',10,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (35,'nov',11,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (36,'dic',12,2019);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (37,'ene',1,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (38,'feb',2,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (39,'mar',3,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (40,'abr',4,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (41,'may',5,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (42,'jun',6,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (43,'jul',7,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (44,'ago',8,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (45,'sep',9,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (46,'oct',10,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (47,'nov',11,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (48,'dic',12,2020);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (49,'ene',1,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (50,'feb',2,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (51,'mar',3,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (52,'abr',4,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (53,'may',5,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (54,'jun',6,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (55,'jul',7,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (56,'ago',8,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (57,'sep',9,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (58,'oct',10,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (59,'nov',11,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (60,'dic',12,2021);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (61,'ene',1,2022);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (62,'feb',2,2022);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (63,'mar',3,2022);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (64,'abr',4,2022);
-INSERT INTO periodo (`id_periodo`,`mes_nombre`,`mes`,`año`) VALUES (65,'may',5,2022);
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (1,1,'2017-01-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (2,1,'2017-02-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (3,1,'2017-03-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (4,1,'2017-04-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (5,1,'2017-05-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (6,1,'2017-06-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (7,1,'2017-07-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (8,1,'2017-08-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (9,1,'2017-09-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (10,1,'2017-10-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (11,1,'2017-11-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (12,1,'2017-12-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (13,1,'2018-01-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (14,1,'2018-02-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (15,1,'2018-03-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (16,1,'2018-04-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (17,1,'2018-05-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (18,1,'2018-06-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (19,1,'2018-07-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (20,1,'2018-08-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (21,1,'2018-09-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (22,1,'2018-10-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (23,1,'2018-11-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (24,1,'2018-12-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (25,1,'2019-01-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (26,1,'2019-02-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (27,1,'2019-03-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (28,1,'2019-04-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (29,1,'2019-05-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (30,1,'2019-06-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (31,1,'2019-07-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (32,1,'2019-08-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (33,1,'2019-09-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (34,1,'2019-10-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (35,1,'2019-11-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (36,1,'2019-12-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (37,2,'2020-01-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (38,2,'2020-02-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (39,2,'2020-03-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (40,2,'2020-04-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (41,2,'2020-05-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (42,2,'2020-06-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (43,2,'2020-07-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (44,2,'2020-08-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (45,2,'2020-09-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (46,2,'2020-10-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (47,2,'2020-11-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (48,2,'2020-12-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (49,2,'2021-01-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (50,2,'2021-02-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (51,2,'2021-03-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (52,2,'2021-04-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (53,2,'2021-05-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (54,2,'2021-06-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (55,2,'2021-07-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (56,2,'2021-08-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (57,2,'2021-09-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (58,2,'2021-10-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (59,2,'2021-11-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (60,2,'2021-12-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (61,2,'2022-01-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (62,2,'2022-02-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (63,2,'2022-03-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (64,2,'2022-04-01');
+INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (65,2,'2022-05-01');
 
 /***************************************************************** TABLA DIVISIONES *****************************************************************/
 INSERT INTO divisiones (`id_division`,`division`) VALUES (1,'Alimentos y bebidas no alcoholicas');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (2,'Bebidas alcoholicas y tabaco');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (3,'Prendas de vestir y calzado');
-INSERT INTO divisiones (`id_division`,`division`) VALUES (4,'Vivienda. agua. electricidad y otros combustibles');
+INSERT INTO divisiones (`id_division`,`division`) VALUES (4,'Vivienda, agua, electricidad y otros combustibles');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (5,'Equipamiento y mantenimiento del hogar');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (6,'Salud');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (7,'Transporte');
@@ -3326,7 +3340,7 @@ INSERT INTO ipc_aperturas (`id_ipc_apertura`,`valor_ipc_apertura`,`id_apertura`,
 
 -- Vista ipc_anual_desde_2017
 CREATE OR REPLACE VIEW ipc_anual_desde_2017 AS
-SELECT SUM(i.valor_ipc_intermensual) AS ipc_anual, p.año
+SELECT SUM(i.valor_ipc_intermensual) AS ipc_anual, YEAR(p.fecha) AS año
 FROM ipc AS i
 LEFT JOIN periodo AS p
 ON i.id_periodo = p.id_periodo
@@ -3339,13 +3353,13 @@ CREATE OR REPLACE VIEW ipc_2022_nacional_divisiones AS
 SELECT d.id_ipc_division,
 (SELECT division FROM divisiones
 	WHERE d.id_division = id_division) AS division,
-d.valor_ipc_division, p.mes_nombre AS mes, p.año,
+d.valor_ipc_division, MONTHNAME(p.fecha) AS mes, YEAR(p.fecha) AS año,
 (SELECT region FROM ipc_argentina.region
 	WHERE (d.id_region = id_region)) AS region
 FROM ipc_divisiones AS d
 JOIN periodo AS p
 ON p.id_periodo = d.id_periodo
-WHERE (p.año >= 2022 AND d.id_region = 1)
+WHERE (YEAR(p.fecha) >= 2022 AND d.id_region = 1)
 ORDER BY division ASC;
 
 -- Vista ipc_gba_divisiones
@@ -3353,7 +3367,7 @@ CREATE OR REPLACE VIEW ipc_gba_divisiones AS
 SELECT d.id_ipc_division,
 (SELECT division FROM divisiones
 	WHERE d.id_division = id_division) AS division,
-d.valor_ipc_division, p.mes_nombre AS mes, p.año,
+d.valor_ipc_division, MONTHNAME(p.fecha) AS mes, YEAR(p.fecha) AS año,
 (SELECT region FROM ipc_argentina.region
 	WHERE (d.id_region = id_region)) AS region
 FROM ipc_divisiones AS d
@@ -3364,34 +3378,33 @@ ORDER BY valor_ipc_division DESC;
 
 -- Vista ipc_nacional_Alberto_Fernandez
 CREATE OR REPLACE VIEW ipc_nacional_Alberto_Fernandez AS
-SELECT i.id_ipc, i.valor_ipc_intermensual, i.valor_ipc_interanual, p.mes_nombre as mes, p.año,
+SELECT i.id_ipc, i.valor_ipc_intermensual, i.valor_ipc_interanual, MONTHNAME(p.fecha) AS mes, YEAR(p.fecha) AS año,
 (SELECT region FROM ipc_argentina.region
 	WHERE region = 'NACIONAL') AS region
 FROM ipc AS i
 JOIN periodo AS p
 ON i.id_periodo = p.id_periodo
-WHERE ((p.año >= 2020 AND p.año <= 2023) AND i.id_region = 1)
+WHERE (p.id_presidente = (SELECT id_presidente FROM presidente WHERE nombre_completo = 'Alberto Fernandez'))
 ORDER BY p.id_periodo DESC;
 
 -- Vista ipc_nacional_Mauricio_Macri
 CREATE OR REPLACE VIEW ipc_nacional_Mauricio_Macri AS
-SELECT i.id_ipc, i.valor_ipc_intermensual, i.valor_ipc_interanual, p.mes_nombre as mes, p.año,
+SELECT i.id_ipc, i.valor_ipc_intermensual, i.valor_ipc_interanual, MONTHNAME(p.fecha) AS mes, YEAR(p.fecha) AS año,
 (SELECT region FROM ipc_argentina.region
 	WHERE region = 'NACIONAL') AS region
 FROM ipc AS i
 JOIN periodo AS p
 ON i.id_periodo = p.id_periodo
-WHERE ((p.año >= 2016 AND p.año <= 2019) AND i.id_region = 1)
+WHERE (p.id_presidente = (SELECT id_presidente FROM presidente WHERE nombre_completo = 'Mauricio Macri'))
 ORDER BY p.id_periodo DESC;
-
 
 /************************************************************************************************************************************************/
 /****************************************************************** FUNCIONES *******************************************************************/
 /************************************************************************************************************************************************/
 
-/*  FUNCION ipc_año_X */
+-- FUNCION ipc_año_X
 DELIMITER $$
-CREATE FUNCTION `ipc_año_X`(this_region TEXT(20), this_año INT)
+CREATE FUNCTION `ipc_año_X`(this_region VARCHAR(20), this_año INT)
 RETURNS DECIMAL(8,2)
 READS SQL DATA
 BEGIN
@@ -3402,16 +3415,16 @@ BEGIN
 			FROM ipc i							-- a nivel nacional
 			RIGHT JOIN periodo p
 			ON i.id_periodo = p.id_periodo
-			WHERE ( (p.año = UPPER(this_año)) AND (i.id_region = (SELECT id_region FROM region WHERE region = this_region)))),
+			WHERE ( (YEAR(p.fecha) = this_año) AND (i.id_region = (SELECT id_region FROM region WHERE region = UPPER(this_region))))),
 		"Datos de entrada invalidos.");
 RETURN resultado;
 END
 $$
 DELIMITER;
 
-/*  FUNCION above_average */
+-- FUNCION above_average
 DELIMITER $$
-CREATE FUNCTION `above_average`(this_mes TEXT(20), this_año INT)
+CREATE FUNCTION `above_average`(this_mes VARCHAR(20), this_año INT)
 RETURNS CHAR(255)
 READS SQL DATA
 BEGIN
@@ -3424,13 +3437,13 @@ BEGIN
 			(id_region = (SELECT id_region FROM region r WHERE (region = 'NACIONAL')))
             AND
             -- Se utiliza el operador LIKE para tomar valido, por ejemplo, MAR como MARZO o ABR como ABRIL
-            (id_periodo = (SELECT id_periodo FROM periodo p WHERE (this_mes LIKE CONCAT(p.mes_nombre,'%') AND p.año = this_año))))
+            (id_periodo = (SELECT id_periodo FROM periodo p WHERE (UPPER(MONTHNAME(p.fecha)) LIKE CONCAT(UPPER(this_mes),'%') AND YEAR(p.fecha) = this_año))))
 		);
 	SET ipc_alimentos_y_bebidas_no_alcoholicas =
 		(SELECT valor_ipc_division FROM ipc_divisiones i
         WHERE(
 			-- Se utiliza el operador LIKE para tomar valido, por ejemplo, MAR como MARZO o ABR como ABRIL
-			(id_periodo = (SELECT id_periodo FROM periodo p WHERE (this_mes LIKE CONCAT(p.mes_nombre,'%') AND p.año = this_año)))
+			(id_periodo = (SELECT id_periodo FROM periodo p WHERE (UPPER(MONTHNAME(p.fecha)) LIKE CONCAT(this_mes,'%') AND YEAR(p.fecha) = this_año)))
 			AND
             (id_division = (SELECT id_division FROM divisiones d WHERE (division = 'Alimentos y bebidas no alcoholicas')))
             AND
@@ -3489,38 +3502,60 @@ DELIMITER ;
 /****************************************************************** TRIGGERS ********************************************************************/
 /************************************************************************************************************************************************/
 
--- Trigger BEF_INST_ipc_general
-CREATE TABLE IF NOT EXISTS log_periodo (
-latest_period INT NOT NULL,
-added_period INT NULL,
-user VARCHAR(50),
-fecha DATE NOT NULL,
-hora TIME NOT NULL
+-- Trigger BEF_INS_ipc_periodo
+CREATE TABLE IF NOT EXISTS log_ipc_periodo (
+	user VARCHAR(50),
+    periodo_ultimo INT,
+    periodo_ingresado INT,
+    fecha DATE,
+    hora TIME,
+    mensaje VARCHAR (100)
 );
 
 DELIMITER $$
-CREATE TRIGGER BEF_INS_ipc_general
+CREATE TRIGGER BEF_INS_periodo
 BEFORE INSERT ON ipc
 FOR EACH ROW
 BEGIN
-DECLARE latest_periodo INT;
-SET latest_periodo = (SELECT MAX(id_periodo) FROM periodo); -- Se capta el último período de la DB
-INSERT INTO log_periodo(`latest_period`, `added_period`, `user`, `fecha`, `hora`) VALUES (
-	latest_periodo,
-	NEW.id_periodo,
-    SESSION_USER(),
-    CURRENT_DATE(),
-    CURRENT_TIME());
+	DECLARE latest_period INT;
+    DECLARE new_date DATE;
+    SET latest_period = (SELECT MAX(id_periodo) FROM periodo);
+    SET new_date = DATE_ADD((SELECT fecha FROM periodo WHERE id_periodo = latest_period), INTERVAL 1 MONTH);
+	IF ( NEW.id_periodo > latest_period ) THEN
+		INSERT INTO periodo(`id_periodo`,`id_presidente`,`fecha`) VALUES (
+			NEW.id_periodo,
+            (SELECT MAX(id_presidente) FROM presidente),
+            new_date
+        );
+        INSERT INTO log_ipc_periodo(`user`, `periodo_ultimo`,`periodo_ingresado`, `fecha`, `hora`, `mensaje`) VALUES (
+		SESSION_USER(),
+        latest_period,
+        NEW.id_periodo,
+		CURRENT_DATE(),
+		CURRENT_TIME(),
+		"La variable id_presidente debe ser corroborada."
+	);
+    ELSE
+		INSERT INTO log_ipc_periodo(`user`, `periodo_ultimo`,`periodo_ingresado`, `fecha`, `hora`,  `mensaje`) VALUES (
+			SESSION_USER(),
+			latest_period,
+			NEW.id_periodo,
+			CURRENT_DATE(),
+			CURRENT_TIME(),
+			"Validar este ingreso, corresponde a id_periodo ya existente."
+		);
+    END IF;	
 END$$
+
 DELIMITER ;
 
 -- Trigger AFT_INS_ipc_general
 CREATE TABLE IF NOT EXISTS log_ipc_general (
-user VARCHAR(50),
-action VARCHAR(10) NOT NULL,
-id_ipc INT NOT NULL,
-fecha DATE NOT NULL,
-hora TIME NOT NULL
+	user VARCHAR(50),
+	action VARCHAR(10) NOT NULL,
+	id_ipc INT NOT NULL,
+	fecha DATE NOT NULL,
+	hora TIME NOT NULL
 );
 
 CREATE TRIGGER AFT_INS_ipc_general
@@ -3531,4 +3566,5 @@ INSERT INTO log_ipc_general(`user`, `action`, `id_ipc`, `fecha`, `hora`) VALUES 
     'INSERT',
     NEW.id_ipc,
     CURRENT_DATE(),
-    CURRENT_TIME());
+    CURRENT_TIME()
+);

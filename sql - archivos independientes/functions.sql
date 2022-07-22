@@ -3,9 +3,9 @@ USE ipc_argentina;
 DROP FUNCTION ipc_año_X;
 DROP FUNCTION above_average;
 
-/*  FUNCION ipc_año_X */
+-- FUNCION ipc_año_X
 DELIMITER $$
-CREATE FUNCTION `ipc_año_X`(this_region TEXT(20), this_año INT)
+CREATE FUNCTION `ipc_año_X`(this_region VARCHAR(20), this_año INT)
 RETURNS DECIMAL(8,2)
 READS SQL DATA
 BEGIN
@@ -16,15 +16,16 @@ BEGIN
 			FROM ipc i							-- a nivel nacional
 			RIGHT JOIN periodo p
 			ON i.id_periodo = p.id_periodo
-			WHERE ( (p.año = UPPER(this_año)) AND (i.id_region = (SELECT id_region FROM region WHERE region = this_region)))),
+			WHERE ( (YEAR(p.fecha) = this_año) AND (i.id_region = (SELECT id_region FROM region WHERE region = UPPER(this_region))))),
 		"Datos de entrada invalidos.");
 RETURN resultado;
 END
 $$
+DELIMITER;
 
-/*  FUNCION above_average */
+-- FUNCION above_average
 DELIMITER $$
-CREATE FUNCTION `above_average`(this_mes TEXT(20), this_año INT)
+CREATE FUNCTION `above_average`(this_mes VARCHAR(20), this_año INT)
 RETURNS CHAR(255)
 READS SQL DATA
 BEGIN
@@ -37,13 +38,13 @@ BEGIN
 			(id_region = (SELECT id_region FROM region r WHERE (region = 'NACIONAL')))
             AND
             -- Se utiliza el operador LIKE para tomar valido, por ejemplo, MAR como MARZO o ABR como ABRIL
-            (id_periodo = (SELECT id_periodo FROM periodo p WHERE (this_mes LIKE CONCAT(p.mes_nombre,'%') AND p.año = this_año))))
+            (id_periodo = (SELECT id_periodo FROM periodo p WHERE (UPPER(MONTHNAME(p.fecha)) LIKE CONCAT(UPPER(this_mes),'%') AND YEAR(p.fecha) = this_año))))
 		);
 	SET ipc_alimentos_y_bebidas_no_alcoholicas =
 		(SELECT valor_ipc_division FROM ipc_divisiones i
         WHERE(
 			-- Se utiliza el operador LIKE para tomar valido, por ejemplo, MAR como MARZO o ABR como ABRIL
-			(id_periodo = (SELECT id_periodo FROM periodo p WHERE (this_mes LIKE CONCAT(p.mes_nombre,'%') AND p.año = this_año)))
+			(id_periodo = (SELECT id_periodo FROM periodo p WHERE (UPPER(MONTHNAME(p.fecha)) LIKE CONCAT(this_mes,'%') AND YEAR(p.fecha) = this_año)))
 			AND
             (id_division = (SELECT id_division FROM divisiones d WHERE (division = 'Alimentos y bebidas no alcoholicas')))
             AND
@@ -61,5 +62,4 @@ BEGIN
 	END IF;
 END
 $$
-
 DELIMITER ;

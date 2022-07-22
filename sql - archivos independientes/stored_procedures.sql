@@ -2,6 +2,7 @@ USE `ipc_argentina`;
 DROP PROCEDURE IF EXISTS `add_ipc_general`;
 DROP PROCEDURE IF EXISTS `divisions_ordered`;
 
+-- SP add_ipc_general
 DELIMITER $$
 CREATE PROCEDURE `add_ipc_general` (IN valor_ipc_intermensual DECIMAL(8,2), valor_ipc_interanual DECIMAL(8,2), id_periodo INT,id_region INT)
 BEGIN
@@ -15,6 +16,7 @@ END$$
 
 DELIMITER ;
 
+-- SP divisions_ordered
 DELIMITER $$
 CREATE PROCEDURE `divisions_ordered` (param VARCHAR(10))
 BEGIN
