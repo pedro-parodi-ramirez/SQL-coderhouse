@@ -3,9 +3,9 @@ DROP DATABASE IF EXISTS ipc_argentina;
 CREATE DATABASE IF NOT EXISTS ipc_argentina;
 USE ipc_argentina;
 
-/************************************************************************************************************************************************/
-/************************************************************** CREACION DE TABLAS **************************************************************/
-/************************************************************************************************************************************************/
+##################################################################################################################################################
+############################################################### CREACION DE TABLAS ###############################################################
+##################################################################################################################################################
 
 -- Tabla presidente
 CREATE TABLE IF NOT EXISTS presidente(
@@ -86,15 +86,15 @@ CREATE TABLE IF NOT EXISTS ipc_aperturas(
 	FOREIGN KEY (id_region) REFERENCES region(id_region)
 );
   
-/************************************************************************************************************************************************/
-/************************************************************** INSERCION DE DATOS **************************************************************/
-/************************************************************************************************************************************************/
+##################################################################################################################################################
+############################################################### INSERCION DE DATOS ###############################################################
+##################################################################################################################################################
 
-/**************************************************************** TABLA PRESIDENTE ***************************************************************/
+################################################################# TABLA PRESIDENTE ################################################################
 INSERT INTO presidente (`id_presidente`,`nombre_completo`, `mandato_inicio`, `mandato_fin`) VALUES (1,'Mauricio Macri', '2015-12-10', '2019-12-10');
 INSERT INTO presidente (`id_presidente`,`nombre_completo`, `mandato_inicio`, `mandato_fin`) VALUES (2,'Alberto Fernandez', '2019-12-10', NULLIF(1,1));
 
-/**************************************************************** TABLA REGION ***************************************************************/
+################################################################# TABLA REGION ################################################################
 INSERT INTO region (`id_region`,`region`) VALUES (1,'NACIONAL');
 INSERT INTO region (`id_region`,`region`) VALUES (2,'GBA');
 INSERT INTO region (`id_region`,`region`) VALUES (3,'PAMPEANA');
@@ -103,7 +103,7 @@ INSERT INTO region (`id_region`,`region`) VALUES (5,'NOROESTE');
 INSERT INTO region (`id_region`,`region`) VALUES (6,'CUYO');
 INSERT INTO region (`id_region`,`region`) VALUES (7,'PATAGONIA');
 
-/***************************************************************** TABLA PERIODO *****************************************************************/
+################################################################## TABLA PERIODO ##################################################################
 INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (1,1,'2017-01-01');
 INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (2,1,'2017-02-01');
 INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (3,1,'2017-03-01');
@@ -170,7 +170,7 @@ INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (63,2,'2022-03
 INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (64,2,'2022-04-01');
 INSERT INTO periodo (`id_periodo`,`id_presidente`,`fecha`) VALUES (65,2,'2022-05-01');
 
-/***************************************************************** TABLA DIVISIONES *****************************************************************/
+################################################################## TABLA DIVISIONES ##################################################################
 INSERT INTO divisiones (`id_division`,`division`) VALUES (1,'Alimentos y bebidas no alcoholicas');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (2,'Bebidas alcoholicas y tabaco');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (3,'Prendas de vestir y calzado');
@@ -184,7 +184,7 @@ INSERT INTO divisiones (`id_division`,`division`) VALUES (10,'Educacion');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (11,'Restaurantes y hoteles');
 INSERT INTO divisiones (`id_division`,`division`) VALUES (12,'Bienes y servicios varios');
 
-/***************************************************************** TABLA APERTURAS *****************************************************************/
+################################################################## TABLA APERTURAS ##################################################################
 INSERT INTO aperturas (`id_apertura`,`apertura`,`id_division`) VALUES (1,'Alimentos',1);
 INSERT INTO aperturas (`id_apertura`,`apertura`,`id_division`) VALUES (2,'Bebidas no alcoholicas',1);
 INSERT INTO aperturas (`id_apertura`,`apertura`,`id_division`) VALUES (3,'Bebidas alcoholicas',2);
@@ -208,7 +208,7 @@ INSERT INTO aperturas (`id_apertura`,`apertura`,`id_division`) VALUES (20,'Educa
 INSERT INTO aperturas (`id_apertura`,`apertura`,`id_division`) VALUES (21,'Restaurantes y comidas fuera del hogar',11);
 INSERT INTO aperturas (`id_apertura`,`apertura`,`id_division`) VALUES (22,'Cuidado personal',12);
 
-/******************************************************************* TABLA IPC *******************************************************************/
+#################################################################### TABLA IPC ####################################################################
 INSERT INTO ipc (`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_periodo`,`id_region`) VALUES (1,1.60,0.00,1,1);
 INSERT INTO ipc (`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_periodo`,`id_region`) VALUES (2,2.10,0.00,2,1);
 INSERT INTO ipc (`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_periodo`,`id_region`) VALUES (3,2.40,0.00,3,1);
@@ -340,7 +340,7 @@ INSERT INTO ipc (`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_pe
 INSERT INTO ipc (`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_periodo`,`id_region`) VALUES (129,6.20,59.00,64,2);
 INSERT INTO ipc (`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_periodo`,`id_region`) VALUES (130,4.80,61.20,65,2);
 
-/**************************************************************** TABLA IPC_DIVISIONES ***************************************************************/
+################################################################# TABLA IPC_DIVISIONES ################################################################
 INSERT INTO ipc_divisiones (`id_ipc_division`,`valor_ipc_division`,`id_division`,`id_periodo`,`id_region`) VALUES (1,1.30,1,1,1);
 INSERT INTO ipc_divisiones (`id_ipc_division`,`valor_ipc_division`,`id_division`,`id_periodo`,`id_region`) VALUES (2,1.80,1,2,1);
 INSERT INTO ipc_divisiones (`id_ipc_division`,`valor_ipc_division`,`id_division`,`id_periodo`,`id_region`) VALUES (3,2.80,1,3,1);
@@ -1902,7 +1902,7 @@ INSERT INTO ipc_divisiones (`id_ipc_division`,`valor_ipc_division`,`id_division`
 INSERT INTO ipc_divisiones (`id_ipc_division`,`valor_ipc_division`,`id_division`,`id_periodo`,`id_region`) VALUES (1559,4.90,12,64,2);
 INSERT INTO ipc_divisiones (`id_ipc_division`,`valor_ipc_division`,`id_division`,`id_periodo`,`id_region`) VALUES (1560,4.40,12,65,2);
 
-/******************************************************************* TABLA IPC_APERTURAS *******************************************************************/
+#################################################################### TABLA IPC_APERTURAS ####################################################################
 INSERT INTO ipc_aperturas (`id_ipc_apertura`,`valor_ipc_apertura`,`id_apertura`,`id_periodo`,`id_region`) VALUES (1,1.30,1,1,2);
 INSERT INTO ipc_aperturas (`id_ipc_apertura`,`valor_ipc_apertura`,`id_apertura`,`id_periodo`,`id_region`) VALUES (2,2.00,1,2,2);
 INSERT INTO ipc_aperturas (`id_ipc_apertura`,`valor_ipc_apertura`,`id_apertura`,`id_periodo`,`id_region`) VALUES (3,3.70,1,3,2);
@@ -3334,9 +3334,9 @@ INSERT INTO ipc_aperturas (`id_ipc_apertura`,`valor_ipc_apertura`,`id_apertura`,
 INSERT INTO ipc_aperturas (`id_ipc_apertura`,`valor_ipc_apertura`,`id_apertura`,`id_periodo`,`id_region`) VALUES (1429,5.00,22,64,2);
 INSERT INTO ipc_aperturas (`id_ipc_apertura`,`valor_ipc_apertura`,`id_apertura`,`id_periodo`,`id_region`) VALUES (1430,4.70,22,65,2);
 
-/************************************************************************************************************************************************/
-/******************************************************************** VISTAS ********************************************************************/
-/************************************************************************************************************************************************/
+##################################################################################################################################################
+##################################################################### VISTAS #####################################################################
+##################################################################################################################################################
 
 -- Vista ipc_anual_desde_2017
 CREATE OR REPLACE VIEW ipc_anual_desde_2017 AS
@@ -3398,9 +3398,9 @@ ON i.id_periodo = p.id_periodo
 WHERE (p.id_presidente = (SELECT id_presidente FROM presidente WHERE nombre_completo = 'Mauricio Macri'))
 ORDER BY p.id_periodo DESC;
 
-/************************************************************************************************************************************************/
-/****************************************************************** FUNCIONES *******************************************************************/
-/************************************************************************************************************************************************/
+##################################################################################################################################################
+################################################################### FUNCIONES ####################################################################
+##################################################################################################################################################
 
 -- FUNCION ipc_año_X
 DELIMITER $$
@@ -3463,9 +3463,9 @@ END
 $$
 DELIMITER ;
 
-/************************************************************************************************************************************************/
-/************************************************************** STORED PROCEDURES ***************************************************************/
-/************************************************************************************************************************************************/
+##################################################################################################################################################
+############################################################### STORED PROCEDURES ################################################################
+##################################################################################################################################################
 
 -- SP add_ipc_general
 DELIMITER $$
@@ -3498,9 +3498,9 @@ END$$
 
 DELIMITER ;
 
-/************************************************************************************************************************************************/
-/****************************************************************** TRIGGERS ********************************************************************/
-/************************************************************************************************************************************************/
+##################################################################################################################################################
+################################################################### TRIGGERS #####################################################################
+##################################################################################################################################################
 
 -- Trigger BEF_INS_ipc_periodo
 CREATE TABLE IF NOT EXISTS log_ipc_periodo (
@@ -3568,3 +3568,18 @@ INSERT INTO log_ipc_general(`user`, `action`, `id_ipc`, `fecha`, `hora`) VALUES 
     CURRENT_DATE(),
     CURRENT_TIME()
 );
+
+#################################################################################################################################################
+#################################################################### USER #######################################################################
+##################################################################################################################################################
+
+
+-- Se crea el usuario read_only sin contraseña de aceso
+CREATE USER IF NOT EXISTS read_only@localhost;
+-- Se ortorgan permisos de solo lectura sobre tablas al usuario read_only
+GRANT SELECT ON ipc_argentina.* TO read_only@localhost;
+
+-- Se crea el usuario user y se asigna una contraseña de acceso
+CREATE USER IF NOT EXISTS user@localhost IDENTIFIED BY '1234';
+-- Se ortorgan permisos de lectura, inserción y actualización de registros al usuario user
+GRANT SELECT, INSERT, UPDATE ON ipc_argentina.* TO user@localhost;
