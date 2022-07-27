@@ -39,6 +39,7 @@ INSERT INTO ipc (`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_pe
 INSERT INTO ipc (`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_periodo`,`id_region`) VALUES (NULL,8.8,888,73,1);
 SAVEPOINT final;
 -- ROLLBACK TO lote_1;
+-- ROLLBACK TO init;
 -- COMMIT;
 
 -- Consulta de las modificaciones realizadas

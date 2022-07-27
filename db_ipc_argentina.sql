@@ -3602,7 +3602,7 @@ START TRANSACTION;
 SET @max_id_presidente = (SELECT MAX(id_presidente) FROM presidente); -- Diego, está bien declarar variables así? No hay que liberar el espacio luego o algo?
 DELETE FROM presidente
 	WHERE id_presidente = @max_id_presidente;
--- ROLLBACK;
+ROLLBACK;
 COMMIT;
 
 -- Backup
@@ -3624,8 +3624,8 @@ INSERT INTO ipc (`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_pe
 INSERT INTO ipc (`id_ipc`,`valor_ipc_intermensual`,`valor_ipc_interanual`,`id_periodo`,`id_region`) VALUES (NULL,8.8,888,73,1);
 SAVEPOINT final;
 -- ROLLBACK TO lote_1;
--- ROLLBACK TO init;
--- COMMIT;
+ROLLBACK TO init;
+COMMIT;
 
 -- Consulta de las modificaciones realizadas
 -- SELECT * FROM ipc ORDER BY id_ipc DESC;
