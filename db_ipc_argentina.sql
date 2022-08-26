@@ -2552,8 +2552,8 @@ SELECT i.id_ipc, i.valor_ipc_intermensual, i.valor_ipc_interanual, MONTHNAME(p.f
 FROM ipc AS i
 JOIN periodo AS p
 ON i.id_periodo = p.id_periodo
-WHERE (p.id_presidente = (SELECT id_presidente FROM presidente WHERE nombre_completo = 'Mauricio Macri')
-							AND (i.id_region = (SELECT id_region FROM region WHERE region = 'NACIONAL')))
+WHERE (p.id_presidente = (SELECT id_presidente FROM presidente
+							WHERE nombre_completo = 'Mauricio Macri') AND (i.id_region = (SELECT id_region FROM region WHERE region = 'NACIONAL')))
 ORDER BY p.id_periodo DESC;
 
 ##################################################################################################################################################
@@ -2562,7 +2562,7 @@ ORDER BY p.id_periodo DESC;
 
 -- FUNCION ipc_año_X
 DELIMITER $$
-CREATE FUNCTION `ipc_año_X`(this_region VARCHAR(20), this_año INT)
+CREATE FUNCTION `ipc_año`(this_region VARCHAR(20), this_año INT)
 RETURNS DECIMAL(8,2)
 READS SQL DATA
 BEGIN
@@ -2573,12 +2573,37 @@ BEGIN
 			FROM ipc i							-- a nivel nacional
 			RIGHT JOIN periodo p
 			ON i.id_periodo = p.id_periodo
-			WHERE ( (YEAR(p.fecha) = this_año) AND (i.id_region = (SELECT id_region FROM region WHERE region = UPPER(this_region))))),
+			WHERE ( (YEAR(p.fecha) = this_año) AND
+					(i.id_region = (SELECT id_region FROM region WHERE region = UPPER(this_region))))
+		),
 		"Datos de entrada invalidos.");
 RETURN resultado;
 END
 $$
-DELIMITER;
+DELIMITER ;
+
+-- FUNCION ipc_mes_año
+DELIMITER $$
+CREATE FUNCTION `ipc_mes_año`(this_region VARCHAR(20), this_mes VARCHAR(20),this_año INT)
+RETURNS DECIMAL(8,2)
+READS SQL DATA
+BEGIN
+	DECLARE resultado FLOAT;
+	SET resultado =
+    IFNULL(
+		(SELECT i.valor_ipc_intermensual		-- Se extrae el valor a nivel nacional del ipc del periodo que se consulta
+			FROM ipc i
+            RIGHT JOIN periodo p
+			ON i.id_periodo = p.id_periodo
+			WHERE ( (UPPER(MONTHNAME(p.fecha)) LIKE CONCAT(this_mes,'%')) AND
+					(YEAR(p.fecha) = this_año) AND
+                    (i.id_region = (SELECT id_region FROM region WHERE region = UPPER(this_region))))
+		),
+		"Datos de entrada invalidos.");
+RETURN resultado;
+END
+$$
+DELIMITER ;
 
 -- FUNCION above_average
 DELIMITER $$
@@ -2704,7 +2729,6 @@ BEGIN
 		);
     END IF;	
 END$$
-
 DELIMITER ;
 
 -- Trigger AFT_INS_ipc_general
