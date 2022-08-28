@@ -2511,11 +2511,12 @@ ORDER BY año DESC;
 -- Vista ipc_2022_nacional_divisiones
 CREATE OR REPLACE VIEW ipc_2022_nacional_divisiones AS
 SELECT d.id_ipc_division,
-(SELECT division FROM divisiones
-	WHERE d.id_division = id_division) AS division,
-d.valor_ipc_division, MONTHNAME(p.fecha) AS mes, YEAR(p.fecha) AS año,
-(SELECT region FROM ipc_argentina.region
-	WHERE (d.id_region = id_region)) AS region
+		(SELECT division FROM divisiones WHERE d.id_division = id_division) AS division,
+		d.valor_ipc_division,
+        ipc_mes_año('nacional', MONTHNAME(p.fecha), YEAR(p.fecha)) AS valor_ipc_promedio,
+        MONTHNAME(p.fecha) AS mes,
+        YEAR(p.fecha) AS año,
+		(SELECT region FROM ipc_argentina.region WHERE (d.id_region = id_region)) AS region
 FROM ipc_divisiones AS d
 JOIN periodo AS p
 ON p.id_periodo = d.id_periodo
