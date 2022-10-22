@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS presidente(
 );
 
 -- Tabla periodo
-CREATE TABLE  IF NOT EXISTS periodo(
+CREATE TABLE IF NOT EXISTS periodo(
 	id_periodo INT NOT NULL AUTO_INCREMENT,
 	id_presidente INT,
 	fecha DATE NOT NULL,
